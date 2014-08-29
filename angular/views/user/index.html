@@ -1,0 +1,187 @@
+<div ng-controller="UserCtrl">
+
+
+    <br/><br/>
+
+    <div row="row">
+
+
+        <div class="col-md-9 col-md-offset-1">
+
+
+            <h2>Users</h2>
+
+
+            <!--<a  class="btn btn-primary"  ng-click="open('','create.html');" ><i class="glyphicon glyphicon-plus"></i> Create</a>-->
+            <!-- ng-click="renderCreateForm();" -->
+            <!--<a  ng-href="#/create" class="btn btn-primary"   ><i class="glyphicon glyphicon-plus"></i> Create</a>-->
+
+            <a ui-sref="users.create" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> Create</a>
+
+
+            <!-- <button class="btn btn-default" ng-click="open('','modal1.html')">Create</button>-->
+
+            <!--<script type="text/ng-template" id="modal1.html">-->
+
+
+            <!--</script>-->
+            <!-- Split button -->
+            <div class="btn-group pull-right">
+                <button type="button" class="btn btn-primary">Actions</button>
+
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="" ng-click="deleteAll()">Delete</a></li>
+                    <!--
+                    <li><a href="#">Another action</a></li>
+                    <li><a href="#">Something else here</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Separated link</a></li>
+                    -->
+                </ul>
+            </div>
+            
+            
+            <button class="btn btn-default" ng-click="hideDatefilter = !hideDatefilter">Date filter</button>
+				  
+	      <div collapse="hideDatefilter">
+	      <hr/>
+		      <form id="date_filter">
+		      From:<input type="text" class="input-sm" starting-day="1"  datepicker-popup="{{format}}" ng-model="dateFilter.from" is-open="from_opened" min-date="minDate" max-date="'2015-06-22'"  datepicker-options="dateOptions"  date-disabled="disabled(date, mode)"  close-text="Close" />
+			  
+			  <button type="button" class="btn btn-default" ng-click="openDatePicker($event,'from')"><i class="glyphicon glyphicon-calendar"></i></button>
+			
+			To:<input type="text"  class="input-sm" datepicker-popup="{{format}}" ng-model="dateFilter.to" is-open="to_opened" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)"  close-text="Close" />
+			  
+			  <button type="button" class="btn btn-default" ng-click="openDatePicker($event,'to')"><i class="glyphicon glyphicon-calendar"></i></button>
+
+			<input type="button" class="btn btn-primary" value="GO" ng-click="index()" />
+		    </form>  
+	      </div>
+      
+      
+            <hr/>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-condensed">
+                    <th></th>
+                    <th>
+                        <a href="" ng-click="sortField='id';reverse=!reverse;index();">Id</a>
+                    </th>
+                    <th>
+                        <a href="" ng-click="sortField='name';reverse=!reverse;index();">Name</a>
+                    </th>
+                    <th>
+                        <a href="" ng-click="sortField='age'; reverse=!reverse;index();">Age</a>
+                    </th>
+                    <th>
+                        <a href="" ng-click="sortField='active';reverse=!reverse;index();">Active</a>
+                    </th>
+                    <th>
+                        <a href="" ng-click="sortField='createdAt';reverse=!reverse;index();">CreatedAt</a>
+                    </th>
+                    <th colspan="3" class="col-md-3">Actions</th>
+                    <tr>
+                        <td><input id="user_all" type="checkbox" value="" ng-click="selectAll($event)" /></td>
+                        <form id="filter_form">
+                            <td><input type="number" size="4" ng-model="userFilter.id" placeholder=""
+                                       ng-keyup="index();"/></td>
+                            <td><input type="text" ng-model="userFilter.name" placeholder="" ng-keyup="index();"/></td>
+                            <td><input type="number" ng-model="userFilter.age" placeholder="" ng-keyup="index();"/>
+                            </td>
+
+                            <td>
+                                <select ng-model="userFilter.active" ng-Change="index();">
+                                    <option value="" SELECTED>all</option>
+                                    <option value="true">true</option>
+                                    <option value="false">false</option>
+                                </select>
+                                <!--<input type="text" ng-model="activeFilter" placeholder="" ng-keyup="index();" />-->
+                            </td>
+                        </form>
+                    </tr>
+                    <!-- filter:{id:idFilter,name:nameFilter,age:ageFilter,active:activeFilter} -->
+                    <!--https://docs.angularjs.org/error/ngRepeat/dupes?p0=user%20in%20users&p1=object:00B-->
+                    <tr  ng-repeat="user in models track by user.id" ng-animate=" 'slide' ">
+                        <td><input id="{{user.id}}" type="checkbox" value="{{user.id}}"
+                                   ng-checked="selection.indexOf(user.id) > -1" ng-click="toggleSelection(user.id)"/>
+                        </td>
+                        <td>{{user.id}}</td>
+                        <td>{{user.name}}</td>
+                        <td>{{user.age}}</td>
+                        <td>{{user.active}}</td>
+                        <td>{{user.createdAt}}</td>
+                        <td><a ui-sref="users.view({id:user.id})"
+                               class="btn btn-default glyphicon glyphicon-eye-open"></a>
+                            <!--</td>
+                            <td>-->
+                            <a ui-sref="users.update({id:user.id})"
+                               class="btn btn-primary glyphicon glyphicon-pencil"></a>
+                            <!--
+                            </td>
+                            <td>
+                            -->
+                            <a href="" ng-click="delete(user.id)" class="btn btn-danger glyphicon glyphicon-remove"></a>
+                        </td>
+
+                    </tr>
+                </table>
+              <div class="pull-right">  
+              PageSize:<select class="form-control input-sm" ng-model="items_per_page" ng-change="pageChanged()" ng-options="size for size in pageSizeOptions" ></select>
+              </div>
+                <pagination total-items="totalItems" items-per-page="items_per_page" ng-model="currentPage"
+                            ng-change="pageChanged()"></pagination>
+
+            </div>
+
+            <!--
+            <div class="alert alert-success col-md-3 col-md-offset-12">
+              <a href="#" class="alert-link"> Succesfully Added</a>
+            </div>
+          -->
+        </div>
+        <br/>
+
+        <div class="col-md-3 " id="alert_container">
+
+
+        </div>
+        <!--
+        <div class="alert alert-warning alert-dismissable">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+					<strong>Warning!</strong> Better check yourself, you're not looking too good.
+				    </div>
+				    -->
+
+    </div>
+
+    <div id="view_container" class="modal">
+
+
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+
+
+                <div ui-view>View here</div>
+
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+</div>
+		     
+		     
+			      
+			     
+		             
+			      
+			      
+			      
+		    

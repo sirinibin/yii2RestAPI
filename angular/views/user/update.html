@@ -1,0 +1,40 @@
+<div class="modal-header">
+    <a ui-sref="users" type="button" class="close" ng-click="closeModal();" aria-hidden="true">&times;</a>
+
+    <h3 class="modal-title">Update #{{model.id}}</h3>
+    <a ng-href="#/user/create" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> Create</a>
+</div>
+
+<div class="modal-body">
+
+    <div class="pull-right">
+        <a ui-sref="users.view({id:model.id})" class="btn btn-primary glyphicon glyphicon-eye-open"></a>
+        <a href="" ng-click="delete(model)" class="btn btn-danger glyphicon glyphicon-remove"></a>
+    </div>
+
+    <form role="form">
+        <input type="hidden" ng-model="model.id">
+
+
+        <div class="form-group">
+            <label for="model.name">Name:</label>
+            <input type="text" ng-model="model.name" size="30" placeholder="Name" value="{{model.name}}"
+                   class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="user.age">Age:</label>
+            <input type="text" ng-model="model.age" size="30" placeholder="Age" value="{{model.age}}"
+                   class="form-control">
+        </div>
+
+
+        <div class="modal-footer">
+            <button type="submit" value="SUBMIT" class="btn btn-primary" ng-click="save(model)">SUBMIT</button>
+
+            <!--<button class="btn btn-primary" ng-click="ok()">OK</button>-->
+            <!--<button class="btn btn-warning" ng-click="cancel()">Cancel</button>-->
+        </div>
+
+    </form>
+
+</div>

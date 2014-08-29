@@ -1,0 +1,23 @@
+<div class="modal-header">
+    <a ui-sref="cities" type="button" class="close" ng-click="closeModal();" aria-hidden="true">&times;</a>
+
+    <h3 class="modal-title">Create New City</h3>
+</div>
+<div class="modal-body">
+    <form role="form" name="cityform" id="cityform">
+        <div class="form-group" ng-class="{ 'has-error' : cityform.name.$invalid && !cityform.name.$pristine }">
+            <input type="text" ng-model="city.name" id="city_name" size="30" placeholder="Name" class="form-control"
+                   ng-minlength="2" ng-maxlength="10" name="name" required>
+            <p ng-show="cityform.name.$error.minlength" class="help-block">Name is too short(min:2 chars).</p>
+            <p ng-show="cityform.name.$error.maxlength" class="help-block">Name is too long(max:10 chars).</p>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" value="SUBMIT" class="btn btn-primary" ng-click="create(city)"
+                    ng-disabled="cityform.$invalid">SUBMIT
+            </button>
+        </div>
+    </form>
+    <script>
+        $("#city_name").focus();
+    </script>
+</div>

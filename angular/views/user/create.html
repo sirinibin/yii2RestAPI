@@ -1,0 +1,59 @@
+<div class="modal-header">
+    <a ui-sref="users" type="button" class="close" ng-click="closeModal();" aria-hidden="true">&times;</a>
+
+    <h3 class="modal-title">Create New user</h3>
+</div>
+
+<div class="modal-body">
+    <form role="form" name="userform" id="userform">
+        <div class="form-group" ng-class="{ 'has-error' : userform.name.$invalid && !userform.name.$pristine }">
+            <input type="text" ng-model="user.name" id="user_name" size="30" placeholder="Name" class="form-control"
+                   ng-minlength="2" ng-maxlength="10" name="name" required>
+
+            <p ng-show="userform.name.$error.minlength" class="help-block">Name is too short(min:2 chars).</p>
+
+            <p ng-show="userform.name.$error.maxlength" class="help-block">Name is too long(max:10 chars).</p>
+            <!--
+           <p ng-show="!userform.name.$dirty" class="help-block">Name is required.</p>
+             <p ng-show="userform.name.$error.required" class="help-block">*</p>
+           -->
+
+
+            <!--
+            <span class="error" ng-show="userform.name.$error.required">
+               *</span>
+             -->
+
+        </div>
+        <div class="form-group" ng-class="{ 'has-error' : userform.age.$invalid && !userform.age.$pristine }">
+
+            <input type="text" ng-model="user.age" name="age" placeholder="Age" class="form-control" required>
+
+            <p ng-show="userform.age.$invalid && !userform.age.$pristine" class="help-block">Age is required.</p>
+
+            <!--
+             <span class="error" ng-show="userform.age.$error.required">
+               Required!</span>
+               -->
+            <!--
+          <span class="error" ng-show="userform.age.$error.number">
+            Not valid number!</span>
+        </div> -->
+
+
+        </div>
+
+        <div class="modal-footer">
+            <button type="submit" value="SUBMIT" class="btn btn-primary" ng-click="create(user)"
+                    ng-disabled="userform.$invalid">SUBMIT
+            </button>
+
+            <!--<button class="btn btn-primary" ng-click="ok()">OK</button>-->
+            <!--<button class="btn btn-warning" ng-click="cancel()">Cancel</button>-->
+        </div>
+    </form>
+    <script>
+        $("#user_name").focus();
+    </script>
+   
+   
