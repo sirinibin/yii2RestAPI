@@ -101,6 +101,15 @@ class UserController extends Controller
             if(isset($params['sort']))
             {
              $sort=$params['sort'];
+		 if(isset($params['order']))
+		{
+		  
+		    if($params['order']=="true")
+		     $sort.=" asc";
+		    else
+		     $sort.=" desc";
+		 
+		}
             }
          
                

@@ -62,6 +62,7 @@ app.config(function ($locationProvider, $stateProvider, $urlRouterProvider, $rou
                 $scope.sortField = "name";
                 $scope.reverse = true;
                 $scope.selection = [];
+		$scope.errors="Errors";
                 $API.index("city", $scope, $scope.userFilter);
             }
         })

@@ -103,12 +103,16 @@ app.factory('$API', function ($http, $location) {
            // alert(angular.toJson($scope.filter));
            
           // alert($scope.sortField,+"|"+$scope.reverse);
-            if($scope.reverse)
+           /*
+           if($scope.reverse)
 	       $scope.sortField=$scope.sortField+" desc";
 	    else
 	       $scope.sortField=$scope.sortField+" asc";
 	    
+	     alert("sort:"+$scope.sortField);
+	    */
             var url = host + model + "/index";
+	   // alert("url:"+url);
             var data = {
                  page: $scope.currentPage,
                 limit: $scope.items_per_page,
@@ -123,14 +127,16 @@ app.factory('$API', function ($http, $location) {
             })
                 .success(function (data, status, headers, config) {
                     
-		    //alert(angular.toJson(data));
+		
+		   //alert(angular.toJson(data));
 		     
                     $scope.models = data.data;
                     $scope.totalItems = data.totalItems;
                   
                 })
                 .error(function (data, status, headers, config) {
-                  
+                  // alert("Err"+angular.toJson(data));
+		     $scope.errors=data;
                 });
         },
         delete: function (model, id, $scope) {

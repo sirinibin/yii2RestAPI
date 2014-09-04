@@ -8,7 +8,8 @@ function UserCtrl($scope, $http, $API, $resource, $location, $log) {
     $scope.pageChanged = function () {
         // alert($scope.currentPage);
         // $scope.currentPage = 1;
-        $API.index("user", $scope);
+       // alert("ok");
+         $API.index("user", $scope);
         //console.log('Page changed to: ' + $scope.currentPage);
     };
 
