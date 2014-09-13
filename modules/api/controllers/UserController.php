@@ -8,6 +8,8 @@ use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\db\Query;
+
 
 /**
  * CityController implements the CRUD actions for City model.
@@ -50,7 +52,7 @@ class UserController extends Controller
        
        if (!in_array($verb, $allowed)) {
             
-             $this->getHeader(400);
+             $this->setHeader(400);
              echo json_encode(array('status'=>0,'error_code'=>400,'message'=>'Method not allowed'),JSON_PRETTY_PRINT);
              exit;
             
@@ -65,85 +67,76 @@ class UserController extends Controller
      */
     public function actionIndex()
     {
-          //$params=Yii::$app->request->get();
-         //  echo json_encode($_REQUEST,JSON_PRETTY_PRINT);
-           //return;
-           
+     
           $params=$_REQUEST;
           $filter=array();
           $sort="";
-          
-          
-          
+         
           $page=1;
-          $limit=5;
+          $limit=10;
              
-             if(isset($params['page']))
-              {
-               $page=$params['page'];
-               unset($params['page']);
-              } 
+           if(isset($params['page']))
+             $page=$params['page'];
+              
                
-             if(isset($params['limit']))
-             {
-               $limit=$params['limit'];
-                  unset($params['limit']);
-             }  
+           if(isset($params['limit']))
+              $limit=$params['limit'];
+               
             $offset=$limit*($page-1);
              
              
-          
+            /* Filter elements */
            if(isset($params['filter']))
             {
              $filter=(array)json_decode($params['filter']);
             }
             
+             if(isset($params['datefilter']))
+            {
+             $datefilter=(array)json_decode($params['datefilter']);
+            }
+            
+             
             if(isset($params['sort']))
             {
-             $sort=$params['sort'];
+              $sort=$params['sort'];
 		 if(isset($params['order']))
-		{
-		  
-		    if($params['order']=="true")
-		     $sort.=" asc";
-		    else
+		{  
+		    if($params['order']=="false")
 		     $sort.=" desc";
+		    else
+		     $sort.=" asc";
 		 
 		}
             }
          
+                
+               $query=new Query;
+               $query->offset($offset)
+	             ->limit($limit)
+	             ->from('user')
+	             ->andFilterWhere(['like', 'id', $filter['id']])
+	             ->andFilterWhere(['like', 'name', $filter['name']])
+	             ->andFilterWhere(['like', 'age', $filter['age']])
+	             ->orderBy($sort)
+	             ->select("id,name,age,createdAt,updatedAt");
+	             
+	       if($datefilter['from'])
+	       {
+	        $query->andWhere("createdAt >= '".$datefilter['from']."' ");
+	       }
+	       if($datefilter['to'])
+	       {
+	        $query->andWhere("createdAt <= '".$datefilter['to']."'");
+	       }
+	       $command = $query->createCommand();
+               $models = $command->queryAll();
                
-               
-		$models=User::find()
-			    ->offset($offset)
-			    ->limit($limit)
-			  
-			    ->andFilterWhere(['like', 'id', $filter['id']])
-			    ->andFilterWhere(['like', 'name', $filter['name']])
-			    ->andFilterWhere(['like', 'age', $filter['age']])
-			  
-			   
-			    ->orderBy($sort)
-			    ->all();
-		
-		
-		$totalItems=User::find()
-		                ->andFilterWhere(['like', 'id', $filter['id']])
-			        ->andFilterWhere(['like', 'name', $filter['name']])
-			        ->andFilterWhere(['like', 'age', $filter['age']])
-		                ->count();
-                       
-                       
+               $totalItems=$query->count();
           
-          $data=array();
-          foreach($models as $m)
-          { 
-            $data[]=$m->attributes;
-          }     
-          
-          $this->getHeader(200);
+          $this->setHeader(200);
          
-          echo json_encode(array('status'=>1,'data'=>$data,'totalItems'=>$totalItems),JSON_PRETTY_PRINT);
+          echo json_encode(array('status'=>1,'data'=>$models,'totalItems'=>$totalItems),JSON_PRETTY_PRINT);
        
     }
       
@@ -158,8 +151,8 @@ class UserController extends Controller
    
       $model=$this->findModel($id);
       
-      $this->getHeader(200);
-      echo json_encode(array('status'=>1,'data'=>$model->attributes),JSON_PRETTY_PRINT);
+      $this->setHeader(200);
+      echo json_encode(array('status'=>1,'data'=>array_filter($model->attributes)),JSON_PRETTY_PRINT);
 	
     }
 
@@ -180,13 +173,13 @@ class UserController extends Controller
 
         if ($model->save()) {
         
-             $this->getHeader(200);
-             echo json_encode(array('status'=>1,'data'=>$model->attributes),JSON_PRETTY_PRINT);
+             $this->setHeader(200);
+             echo json_encode(array('status'=>1,'data'=>array_filter($model->attributes)),JSON_PRETTY_PRINT);
           
         } 
         else
         {
-             $this->getHeader(400);
+             $this->setHeader(400);
              echo json_encode(array('status'=>0,'error_code'=>400,'errors'=>$model->errors),JSON_PRETTY_PRINT);
         }
      
@@ -208,13 +201,13 @@ class UserController extends Controller
 
         if ($model->save()) {
         
-             $this->getHeader(200);
-             echo json_encode(array('status'=>1,'data'=>$model->attributes),JSON_PRETTY_PRINT);
+             $this->setHeader(200);
+             echo json_encode(array('status'=>1,'data'=>array_filter($model->attributes)),JSON_PRETTY_PRINT);
           
         } 
         else
         {
-             $this->getHeader(400);
+             $this->setHeader(400);
              echo json_encode(array('status'=>0,'error_code'=>400,'errors'=>$model->errors),JSON_PRETTY_PRINT);
         }
         
@@ -232,14 +225,14 @@ class UserController extends Controller
         
         if($model->delete())
          { 
-             $this->getHeader(200);
-             echo json_encode(array('status'=>1,'data'=>$model->attributes),JSON_PRETTY_PRINT);
+             $this->setHeader(200);
+             echo json_encode(array('status'=>1,'data'=>array_filter($model->attributes)),JSON_PRETTY_PRINT);
          
          }
          else
          {
            
-             $this->getHeader(400);
+             $this->setHeader(400);
              echo json_encode(array('status'=>0,'error_code'=>400,'errors'=>$model->errors),JSON_PRETTY_PRINT);
          }
 
@@ -255,16 +248,16 @@ class UserController extends Controller
           $model=$this->findModel($id);
           
           if($model->delete())
-            $data[]=$model->attributes;
+            $data[]=array_filter($model->attributes);
           else
            {
-             $this->getHeader(400);
+             $this->setHeader(400);
              echo json_encode(array('status'=>0,'error_code'=>400,'errors'=>$model->errors),JSON_PRETTY_PRINT);
              return;
            }  
         }
         
-	$this->getHeader(200);
+	$this->setHeader(200);
 	echo json_encode(array('status'=>1,'data'=>$data),JSON_PRETTY_PRINT);
 
     }
@@ -282,14 +275,14 @@ class UserController extends Controller
             return $model;
         } else {
         
-           $this->getHeader(400);
+           $this->setHeader(400);
 	   echo json_encode(array('status'=>0,'error_code'=>400,'message'=>'Bad request'),JSON_PRETTY_PRINT);
 	   exit;
            // throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
     
-    private function getHeader($status)
+    private function setHeader($status)
       {
 	  
 	  $status_header = 'HTTP/1.1 ' . $status . ' ' . $this->_getStatusCodeMessage($status);

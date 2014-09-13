@@ -61,7 +61,7 @@ app.factory('$API', function ($http, $location) {
                 url: url
             })
                 .success(function (data, status, headers, config) {
-                    //alert("ok:"+angular.toJson(data));
+                   // alert(angular.toJson(data));
                     // $scope.users.push(data);
                     $scope.model = data.data;
                     if ($scope.model) {
@@ -84,11 +84,23 @@ app.factory('$API', function ($http, $location) {
 	 
 	     $scope.filter={};
 	  
+	     
 	   for (var field in $scope.dateFilter) {
 	     
-	      $scope.setDateRange(field);    
+	      //$scope.setDateRange(field);   
+	      
+	       if($scope.dateFilter['from'])
+	      {
+		 $scope.dateFilter['from'].setHours(00,00,00,00);
+	      }
+	     if( $scope.dateFilter['to'])
+	      {
+		 $scope.dateFilter['to'].setHours(23,59,59,999);
+	      }
 		
 	   }
+	   
+	     
 	    
             /* Remove empty fields */
             for (var field in $scope.userFilter) {
@@ -110,7 +122,16 @@ app.factory('$API', function ($http, $location) {
 	       $scope.sortField=$scope.sortField+" asc";
 	    
 	     alert("sort:"+$scope.sortField);
-	    */
+	    */ 
+	    /*
+	    var datefilter={};
+	      if($scope.dateFilter['to'])
+		{
+		  
+		}  
+		*/
+		//alert($scope.dateFilter);
+	      
             var url = host + model + "/index";
 	   // alert("url:"+url);
             var data = {
@@ -118,8 +139,12 @@ app.factory('$API', function ($http, $location) {
                 limit: $scope.items_per_page,
                  sort: $scope.sortField,
                 order: $scope.reverse,
-	        filter:$scope.filter,
+	       filter:$scope.filter,
+	   datefilter:$scope.dateFilter
             };
+	      //alert(data);
+	    // alert(angular.toJson(data));
+	     
             $http({
                 method: 'GET',
                 url: url,
@@ -127,8 +152,9 @@ app.factory('$API', function ($http, $location) {
             })
                 .success(function (data, status, headers, config) {
                     
-		
-		   //alert(angular.toJson(data));
+		       //alert(data);
+		       //return;
+		 //  alert(angular.toJson(data));
 		     
                     $scope.models = data.data;
                     $scope.totalItems = data.totalItems;
@@ -166,7 +192,7 @@ app.factory('$API', function ($http, $location) {
                // ids: $scope.selection
                 ids: angular.toJson($scope.selection)
             };
-
+              //alert(angular.toJson(data));
             $http({method: 'POST',
                 url: url,
                 params: data
@@ -183,6 +209,7 @@ app.factory('$API', function ($http, $location) {
 
                 })
                 .error(function (data, status, headers, config) {
+		    alert(angular.toJson(data));
                     $scope.showMessage("Sorry!Something went wrong:" + data, 'warning', true);
                     // called asynchronously if an error occurs
                     // or server returns response with an error status.

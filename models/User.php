@@ -152,4 +152,22 @@ class User extends \yii\db\ActiveRecord  implements IdentityInterface
     {
         return $this->password === $password;
     }
+    public function beforeSave($insert)
+    {
+         if (parent::beforeSave($insert)) {
+              if($this->isNewRecord)
+               {
+                 $this->createdAt=date("Y-m-d H:i:s",time());
+                 $this->updatedAt=date("Y-m-d H:i:s",time());
+               }
+               else
+               {
+                 $this->updatedAt=date("Y-m-d H:i:s",time());
+               }
+               
+              return true;
+          } else {
+              return false;
+          }
+    }
 }

@@ -83,6 +83,9 @@
                     <th>
                         <a href="" ng-click="sortField='createdAt';reverse=!reverse;index();">CreatedAt</a>
                     </th>
+                     <th>
+                        <a href="" ng-click="sortField='updatedAt';reverse=!reverse;index();">UpdatedAt</a>
+                    </th>
                     <th colspan="3" class="col-md-3">Actions</th>
                     <tr>
                         <td><input id="user_all" type="checkbox" value="" ng-click="selectAll($event)" /></td>
@@ -90,9 +93,8 @@
                             <td><input type="number" size="4" ng-model="userFilter.id" placeholder=""
                                        ng-keyup="index();"/></td>
                             <td><input type="text" ng-model="userFilter.name" placeholder="" ng-keyup="index();"/></td>
-                            <td><input type="number" ng-model="userFilter.age" placeholder="" ng-keyup="index();"/>
-                            </td>
-
+                            <td><input type="number" ng-model="userFilter.age" placeholder="" ng-keyup="index();"/></td>
+                            
                             <td>
                                 <select ng-model="userFilter.active" ng-Change="index();">
                                     <option value="" SELECTED>all</option>
@@ -101,6 +103,8 @@
                                 </select>
                                 <!--<input type="text" ng-model="activeFilter" placeholder="" ng-keyup="index();" />-->
                             </td>
+                            <td></td>
+                            <td></td>
                         </form>
                     </tr>
                     <!-- filter:{id:idFilter,name:nameFilter,age:ageFilter,active:activeFilter} -->
@@ -114,6 +118,7 @@
                         <td>{{user.age}}</td>
                         <td>{{user.active}}</td>
                         <td>{{user.createdAt}}</td>
+                        <td>{{user.updatedAt}}</td>
                         <td><a ui-sref="users.view({id:user.id})"
                                class="btn btn-default glyphicon glyphicon-eye-open"></a>
                             <!--</td>

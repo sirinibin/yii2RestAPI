@@ -9,7 +9,7 @@ app.config(function ($locationProvider, $stateProvider, $urlRouterProvider, $rou
             $scope.items_per_page = 5;
             $scope.currentPage = 1;
             $scope.sortField = "id";
-            $scope.reverse = true;
+            $scope.reverse = false;
             $scope.selection = [];
 	    
 	    $scope.hideDatefilter = true;
