@@ -10,6 +10,15 @@ $config = [
         'api' => [
             'class' => 'app\modules\api\v1',
         ],
+         'angularbridge' => [
+            'class' => 'app\modules\angularbridge\AngularBridge',
+        ],
+        /*
+        'bootstrap' => ['angularbridge'],
+        'angularbridge' => [
+            'class' => 'yii\angularbridge\Module',
+        ],
+        */
     ],
     
     'components' => [
@@ -40,18 +49,22 @@ $config = [
 	    'enablePrettyUrl' => true,
 	    'showScriptName' => true,
 	    'rules' => [
+	     '<controller:\w+>/<id:\d+>' => '<controller>/view',
 	    
+      
+            
+            '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+            
+            '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+            
+            
+            
 	    '<module:\w+>/<controller:\w+>/<id:\d+>' => '<module>/<controller>/view',
 	    
 	    '<module:\w+>/<controller:\w+>/<action:\w+>/<id:\d+>' => '<module>/<controller>/<action>',
 	    
 	    
-	    '<controller:\w+>/<id:\d+>' => '<controller>/view',
-            
-            
-            '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
-            
-            '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+	   
             
            // '<module:\w+>/<controller:\w+>/<action:\w+>' => '<module>/<controller>/<action>',
             
@@ -78,9 +91,11 @@ if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = 'yii\debug\Module';
-
+     
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = 'yii\gii\Module';
+    
+
 }
 
 return $config;

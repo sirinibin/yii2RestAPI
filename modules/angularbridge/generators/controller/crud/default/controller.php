@@ -1,24 +1,54 @@
 <?php
+/**
+ * This is the template for generating a CRUD controller class file.
+ */
 
-namespace app\modules\api\controllers;
+use yii\db\ActiveRecordInterface;
+use yii\helpers\StringHelper;
+
+
+/* @var $this yii\web\View */
+/* @var $generator yii\gii\generators\crud\Generator */
+
+$controllerClass = StringHelper::basename($generator->controllerClass);
+$modelClass = StringHelper::basename($generator->modelClass);
+$searchModelClass = StringHelper::basename($generator->searchModelClass);
+if ($modelClass === $searchModelClass) {
+    $searchModelAlias = $searchModelClass . 'Search';
+}
+
+/* @var $class ActiveRecordInterface */
+$class = $generator->modelClass;
+$pks = $class::primaryKey();
+$table= $class::tableName();
+$urlParams = $generator->generateUrlParams();
+$actionParams = $generator->generateActionParams();
+$actionParamComments = $generator->generateActionParamComments();
+$searchConditions = $generator->generateSearchConditions();
+
+echo "<?php\n";
+?>
+
+namespace <?= StringHelper::dirname(ltrim($generator->controllerClass, '\\')) ?>;
 
 use Yii;
-use app\models\User;
+use <?= ltrim($generator->modelClass, '\\') ?>;
+<?php if (!empty($generator->searchModelClass)): ?>
+use <?= ltrim($generator->searchModelClass, '\\') . (isset($searchModelAlias) ? " as $searchModelAlias" : "") ?>;
+<?php else: ?>
 use yii\data\ActiveDataProvider;
-use yii\web\Controller;
+<?php endif; ?>
+use <?= ltrim($generator->baseControllerClass, '\\') ?>;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\db\Query;
 
-
-
 /**
- * CityController implements the CRUD actions for City model.
+ * <?= $controllerClass ?> implements the CRUD actions for <?= $modelClass ?> model.
  */
-class UserController extends Controller
+class <?= $controllerClass ?> extends <?= StringHelper::basename($generator->baseControllerClass) . "\n" ?>
 {
-   
-    public function behaviors()
+   public function behaviors()
     {
         return [
             'verbs' => [
@@ -26,10 +56,10 @@ class UserController extends Controller
                 'actions' => [
                      'index'=>['get'],
                      'view'=>['get'],
-                     'create'=>['post'],
+                     'create'=>['get'],
                      'update'=>['get'],
-                     'delete' => ['delete'],
-                     'deleteall'=>['post'],
+                     'delete' => ['get'],
+                     'deleteall'=>['get'],
                 ],
               
             ]
@@ -60,12 +90,14 @@ class UserController extends Controller
          }  
          
        return true;  
-    }
-   
+    } 
+
     /**
-     * Lists all City models.
+     * Lists all <?= $modelClass ?> models.
      * @return mixed
      */
+    
+     
     public function actionIndex()
     {
      
@@ -91,15 +123,7 @@ class UserController extends Controller
             {
              $filter=(array)json_decode($params['filter']);
             }
-             /*
-             echo "<pre>";
-            print_r($params);
-            echo "</pre>";
             
-            echo "<pre>";
-            print_r($filter);
-            echo "</pre>";
-            exit;*/
              if(isset($params['datefilter']))
             {
              $datefilter=(array)json_decode($params['datefilter']);
@@ -109,26 +133,23 @@ class UserController extends Controller
             if(isset($params['sort']))
             {
               $sort=$params['sort'];
-		 if(isset($params['order']))
-		{  
-		    if($params['order']=="false")
-		     $sort.=" desc";
-		    else
-		     $sort.=" asc";
-		 
-		}
+			  if(isset($params['order']))
+			  {  
+			      if($params['order']=="false")
+			      $sort.=" desc";
+			      else
+			      $sort.=" asc";
+			  
+			  }
             }
          
                 
                $query=new Query;
                $query->offset($offset)
 	             ->limit($limit)
-	             ->from('user')
-	             ->andFilterWhere(['like', 'id', $filter['id']])
-	             ->andFilterWhere(['like', 'name', $filter['name']])
-	             ->andFilterWhere(['like', 'age', $filter['age']])
-	             ->orderBy($sort)
-	             ->select("id,name,age,createdAt,updatedAt");
+	             ->from('<?= $table ?>')
+	             ->orderBy($sort);
+	       <?= implode("\n        ", $searchConditions) ?>
 	             
 	       if($datefilter['from'])
 	       {
@@ -148,17 +169,16 @@ class UserController extends Controller
           echo json_encode(array('status'=>1,'data'=>$models,'totalItems'=>$totalItems),JSON_PRETTY_PRINT);
        
     }
-      
 
     /**
-     * Displays a single City model.
-     * @param integer $id
+     * Displays a single <?= $modelClass ?> model.
+     * <?= implode("\n     * ", $actionParamComments) . "\n" ?>
      * @return mixed
      */
-    public function actionView($id)
+    public function actionView(<?= $actionParams ?>)
     {
    
-      $model=$this->findModel($id);
+      $model=$this->findModel(<?= $actionParams ?>);
       
       $this->setHeader(200);
       echo json_encode(array('status'=>1,'data'=>array_filter($model->attributes)),JSON_PRETTY_PRINT);
@@ -166,7 +186,7 @@ class UserController extends Controller
     }
 
     /**
-     * Creates a new City model.
+     * Creates a new <?= $modelClass ?> model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
@@ -175,7 +195,7 @@ class UserController extends Controller
        
         $params=$_REQUEST;
          
-        $model = new User();
+        $model = new  <?= $modelClass ?>();
         $model->attributes=$params;
         
         
@@ -195,16 +215,16 @@ class UserController extends Controller
     }
 
     /**
-     * Updates an existing City model.
+     * Updates an existing <?= $modelClass ?> model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
+     * <?= implode("\n     * ", $actionParamComments) . "\n" ?>
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionUpdate(<?= $actionParams ?>)
     {
         $params=$_REQUEST;
     
-        $model = $this->findModel($id);
+        $model = $this->findModel(<?= $actionParams ?>);
     
         $model->attributes=$params;
 
@@ -223,14 +243,14 @@ class UserController extends Controller
     }
 
     /**
-     * Deletes an existing City model.
+     * Deletes an existing <?= $modelClass ?> model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
+     * <?= implode("\n     * ", $actionParamComments) . "\n" ?>
      * @return mixed
      */
-    public function actionDelete($id)
+    public function actionDelete(<?= $actionParams ?>)
     {
-        $model=$this->findModel($id);
+        $model=$this->findModel(<?= $actionParams ?>);
         
         if($model->delete())
          { 
@@ -272,23 +292,33 @@ class UserController extends Controller
     }
 
     /**
-     * Finds the City model based on its primary key value.
+     * Finds the <?= $modelClass ?> model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return City the loaded model
+     * <?= implode("\n     * ", $actionParamComments) . "\n" ?>
+     * @return <?=                   $modelClass ?> the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected function findModel(<?= $actionParams ?>)
     {
-        if (($model = User::findOne($id)) !== null) {
+       <?php
+if (count($pks) === 1) {
+    $condition = '$id';
+} else {
+    $condition = [];
+    foreach ($pks as $pk) {
+        $condition[] = "'$pk' => \$$pk";
+    }
+    $condition = '[' . implode(', ', $condition) . ']';
+}
+?>
+     if (($model = <?= $modelClass ?>::findOne(<?= $condition ?>)) !== null) {
             return $model;
         } else {
         
-           $this->setHeader(400);
-	   echo json_encode(array('status'=>0,'error_code'=>400,'message'=>'Bad request'),JSON_PRETTY_PRINT);
-	   exit;
-           // throw new NotFoundHttpException('The requested page does not exist.');
-        }
+		  $this->setHeader(400);
+		  echo json_encode(array('status'=>0,'error_code'=>400,'message'=>'Bad request'),JSON_PRETTY_PRINT);
+		  exit;
+         }
     }
     
     private function setHeader($status)

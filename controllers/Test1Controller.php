@@ -1,24 +1,21 @@
 <?php
 
-namespace app\modules\api\controllers;
+namespace app\controllers;
 
 use Yii;
-use app\models\User;
+use app\models\Test1;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\db\Query;
 
-
-
 /**
- * CityController implements the CRUD actions for City model.
+ * Test1Controller implements the CRUD actions for Test1 model.
  */
-class UserController extends Controller
+class Test1Controller extends Controller
 {
-   
-    public function behaviors()
+   public function behaviors()
     {
         return [
             'verbs' => [
@@ -27,7 +24,7 @@ class UserController extends Controller
                      'index'=>['get'],
                      'view'=>['get'],
                      'create'=>['post'],
-                     'update'=>['get'],
+                     'update'=>['post'],
                      'delete' => ['delete'],
                      'deleteall'=>['post'],
                 ],
@@ -60,12 +57,14 @@ class UserController extends Controller
          }  
          
        return true;  
-    }
-   
+    } 
+
     /**
-     * Lists all City models.
+     * Lists all Test1 models.
      * @return mixed
      */
+    
+     
     public function actionIndex()
     {
      
@@ -91,15 +90,7 @@ class UserController extends Controller
             {
              $filter=(array)json_decode($params['filter']);
             }
-             /*
-             echo "<pre>";
-            print_r($params);
-            echo "</pre>";
             
-            echo "<pre>";
-            print_r($filter);
-            echo "</pre>";
-            exit;*/
              if(isset($params['datefilter']))
             {
              $datefilter=(array)json_decode($params['datefilter']);
@@ -109,26 +100,27 @@ class UserController extends Controller
             if(isset($params['sort']))
             {
               $sort=$params['sort'];
-		 if(isset($params['order']))
-		{  
-		    if($params['order']=="false")
-		     $sort.=" desc";
-		    else
-		     $sort.=" asc";
-		 
-		}
+			  if(isset($params['order']))
+			  {  
+			      if($params['order']=="false")
+			      $sort.=" desc";
+			      else
+			      $sort.=" asc";
+			  
+			  }
             }
          
                 
                $query=new Query;
                $query->offset($offset)
 	             ->limit($limit)
-	             ->from('user')
-	             ->andFilterWhere(['like', 'id', $filter['id']])
-	             ->andFilterWhere(['like', 'name', $filter['name']])
-	             ->andFilterWhere(['like', 'age', $filter['age']])
-	             ->orderBy($sort)
-	             ->select("id,name,age,createdAt,updatedAt");
+	             ->from('test1')
+	             ->orderBy($sort);
+	       $query->andFilterWhere([
+            'id' => $filter['id'],
+        ]);
+
+        $query->andFilterWhere(['like', 'name', $filter['name']]);
 	             
 	       if($datefilter['from'])
 	       {
@@ -148,10 +140,9 @@ class UserController extends Controller
           echo json_encode(array('status'=>1,'data'=>$models,'totalItems'=>$totalItems),JSON_PRETTY_PRINT);
        
     }
-      
 
     /**
-     * Displays a single City model.
+     * Displays a single Test1 model.
      * @param integer $id
      * @return mixed
      */
@@ -166,7 +157,7 @@ class UserController extends Controller
     }
 
     /**
-     * Creates a new City model.
+     * Creates a new Test1 model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
@@ -175,7 +166,7 @@ class UserController extends Controller
        
         $params=$_REQUEST;
          
-        $model = new User();
+        $model = new  Test1();
         $model->attributes=$params;
         
         
@@ -195,7 +186,7 @@ class UserController extends Controller
     }
 
     /**
-     * Updates an existing City model.
+     * Updates an existing Test1 model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -223,7 +214,7 @@ class UserController extends Controller
     }
 
     /**
-     * Deletes an existing City model.
+     * Deletes an existing Test1 model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -272,23 +263,22 @@ class UserController extends Controller
     }
 
     /**
-     * Finds the City model based on its primary key value.
+     * Finds the Test1 model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return City the loaded model
+     * @return Test1 the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = User::findOne($id)) !== null) {
+            if (($model = Test1::findOne($id)) !== null) {
             return $model;
         } else {
         
-           $this->setHeader(400);
-	   echo json_encode(array('status'=>0,'error_code'=>400,'message'=>'Bad request'),JSON_PRETTY_PRINT);
-	   exit;
-           // throw new NotFoundHttpException('The requested page does not exist.');
-        }
+		  $this->setHeader(400);
+		  echo json_encode(array('status'=>0,'error_code'=>400,'message'=>'Bad request'),JSON_PRETTY_PRINT);
+		  exit;
+         }
     }
     
     private function setHeader($status)

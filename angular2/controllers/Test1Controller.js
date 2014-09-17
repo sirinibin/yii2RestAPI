@@ -1,29 +1,41 @@
-function UserCtrl($scope, $http, $API, $resource, $location, $log) {
-   
+
+function Test1Ctrl($scope, $http, $API, $resource, $location, $log) {
+
     $scope.pageChanged = function () {
-      
-         $API.index("user", $scope);
+    
+         $API.index("test1", $scope); 
     };
 
-    $scope.create = function ($user) {
-      
-        $API.create("user", $user, $scope);
+    $scope.create = function ($test1) {
+        $API.create("test1", $test1, $scope);
     };
 
-    $scope.save = function ($user) {
-        
-        $API.update("user", $user, $scope);
+    $scope.save = function ($test1) {
+        //alert("cool");
+        $API.update("test1", $test1, $scope);
     };
 
     $scope.index = function () {
-         
-         
-        $API.index("user", $scope);
+      
+          $scope.filter={};
+	   
+           for (var field in $scope.test1Filter) {
+	            // alert(field);
+                
+	        if ($scope.test1Filter[field]) {
+		  
+                      
+		      $scope.filter[field] = $scope.test1Filter[field];
+		     
+                }
+            }
+        
+        
+        $API.index("test1", $scope);
     };
 
     $scope.closeModal = function () {
-        
-      $('#view_container').modal('toggle');
+        $('#view_container').modal('toggle');
     };
 
 
@@ -32,7 +44,7 @@ function UserCtrl($scope, $http, $API, $resource, $location, $log) {
         if (r != true) {
             return;
         }
-	  $API.delete("user",$id, $scope);
+	  $API.delete("test1",$id, $scope);
     };
 
     $scope.deleteAll = function ($model) {
@@ -44,7 +56,7 @@ function UserCtrl($scope, $http, $API, $resource, $location, $log) {
             alert("No records selected");
             return;
         }
-        $API.deleteAll("user", $scope);
+        $API.deleteAll("test1", $scope);
     };
 
     $scope.findbyId = function (id) {
@@ -52,7 +64,6 @@ function UserCtrl($scope, $http, $API, $resource, $location, $log) {
             if ($scope.models[i].id == id) {
                 $scope.model = $scope.models[i];
                 return;
-                //return obj[i];
             }
         }
     };
@@ -73,9 +84,10 @@ function UserCtrl($scope, $http, $API, $resource, $location, $log) {
     };
 
     // toggle selection for a given employee by name
+    
     $scope.toggleSelection = function toggleSelection(id) {
         var idx = $scope.selection.indexOf(id);
-        $("#user_all").attr('checked', false);
+        $("#test1_all").attr('checked', false);
         // is currently selected
         if (idx > -1) {
             $scope.selection.splice(idx, 1);
@@ -114,46 +126,6 @@ function UserCtrl($scope, $http, $API, $resource, $location, $log) {
 		
      };
     
-     $scope.setDateRange = function(field) {
-       
-         if(field=="from")
-		     {
-		         
-		        $scope.dateFilter[field].setHours(00,00,00,00);
-		     
-		        if ($scope.dateFilter['to'])
-			{
-			
-			   $scope.dateFilter['to'].setHours(23,59,59,999);
-			     
-			   $scope.filter['createdAt'] = {'>=':$scope.dateFilter[field],'<=':$scope.dateFilter['to']}; 
-			   
-			}
-			else
-			{
-			
-		           $scope.filter['createdAt'] = {'>=':$scope.dateFilter[field]};
-		
-			}
-		     }
-		     else if(field=="to")
-		     {
-		  
-		        $scope.dateFilter[field].setHours(23,59,59,999);
-			
-			
-		        if ($scope.dateFilter['from'])
-			{
-			   $scope.dateFilter['from'].setHours(00,00,00,00);
-			 
-			   $scope.filter['createdAt'] = {'>=':$scope.dateFilter['from'],'<=':$scope.dateFilter[field]}; 
-			}
-			else
-			{
-		           $scope.filter['createdAt'] = {'<=':$scope.dateFilter[field]}
-			}
-		     }
-       
-    };
+
     
 }

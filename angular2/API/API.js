@@ -3,7 +3,7 @@ app.factory('$API', function ($http, $location) {
      //var host = "http://localhost:1337/";
     //var host = "http://angularsailscrud.herokuapp.com/";
    // var host = "index.php/api/";
-    var host= "/yii2basic1/web/index.php/api/";
+    var host= "/yii2basic1/web/index.php/";
    //  var host= "api/";
     return {
         create: function (model, data, $scope) {
@@ -42,6 +42,7 @@ app.factory('$API', function ($http, $location) {
                     // alert("ok:"+angular.toJson(data));
                     // $scope.users.push(data);
                     $scope.model = data.data;
+		     $scope.index();
                     $scope.showMessage("Succesfully Added!", 'success', true);
                     $location.path(model + "/" + $scope.model.id);
                 })
@@ -82,13 +83,11 @@ app.factory('$API', function ($http, $location) {
        index: function (model, $scope) {
            
 	 
-	     $scope.filter={};
+	     
 	  
 	     
 	   for (var field in $scope.dateFilter) {
 	     
-	  
-	      
 	       if($scope.dateFilter['from'])
 	      {
 		 $scope.dateFilter['from'].setHours(00,00,00,00);
@@ -101,37 +100,7 @@ app.factory('$API', function ($http, $location) {
 		
 	   }
 	   
-	     
-	    
-            /* Remove empty fields */
-            for (var field in $scope.userFilter) {
-                
-	        if ($scope.userFilter[field]) {
-		  
-                      
-		      $scope.filter[field] = $scope.userFilter[field];
-		     
-                }
-            }
-           // alert(angular.toJson($scope.filter));
-           
-          // alert($scope.sortField,+"|"+$scope.reverse);
-           /*
-           if($scope.reverse)
-	       $scope.sortField=$scope.sortField+" desc";
-	    else
-	       $scope.sortField=$scope.sortField+" asc";
-	    
-	     alert("sort:"+$scope.sortField);
-	    */ 
-	    /*
-	    var datefilter={};
-	      if($scope.dateFilter['to'])
-		{
-		  
-		}  
-		*/
-		//alert(angular.toJson($scope.dateFilter));
+	
 	      
             var url = host + model + "/index";
 	   // alert("url:"+url);
@@ -143,7 +112,7 @@ app.factory('$API', function ($http, $location) {
 	       filter:$scope.filter,
 	   datefilter:$scope.dateFilter
             };
-	   // alert(angular.toJson($scope.filter));
+	 //   alert(angular.toJson($scope.filter));
 	      //alert(data);
 	    // alert(angular.toJson(data));
 	     
@@ -156,7 +125,8 @@ app.factory('$API', function ($http, $location) {
                     
 		       //alert(data);
 		       //return;
-		 //  alert(angular.toJson(data));
+		    // alert(angular.toJson(data));
+		     
 		      if(data.status==1)
 		      {
 			 $scope.models = data.data;

@@ -1,38 +1,68 @@
-function UserCtrl($scope, $http, $API, $resource, $location, $log) {
-   
+<?php
+
+use yii\helpers\Inflector;
+use yii\db\ActiveRecordInterface;
+use yii\helpers\StringHelper;
+
+/* @var $this yii\web\View */
+/* @var $generator yii\gii\generators\crud\Generator */
+
+
+$modelClass = StringHelper::basename($generator->modelClass);
+$model = $generator->modelClass;
+
+$pks = $model::primaryKey();
+$pk=null;
+foreach ($pks as $k) {
+        $pk = $k;
+        break;
+    }
+?>
+
+function <?= $modelClass ?>Ctrl($scope, $http, $API, $resource, $location, $log) {
+
     $scope.pageChanged = function () {
-      
-         $API.index("user", $scope);
+    
+         $API.index("<?= strtolower($modelClass) ?>", $scope); 
     };
 
-    $scope.create = function ($user) {
-      
-        $API.create("user", $user, $scope);
+    $scope.create = function ($<?= strtolower($modelClass) ?>) {
+        $API.create("<?= strtolower($modelClass) ?>", $<?= strtolower($modelClass) ?>, $scope);
     };
 
-    $scope.save = function ($user) {
-        
-        $API.update("user", $user, $scope);
+    $scope.save = function ($<?= strtolower($modelClass) ?>) {
+        //alert("cool");
+        $API.update("<?= strtolower($modelClass) ?>", $<?= strtolower($modelClass) ?>, $scope);
     };
 
     $scope.index = function () {
-         
-         
-        $API.index("user", $scope);
+         $scope.filter={};
+	   
+           for (var field in $scope.<?= strtolower($modelClass) ?>1Filter) {
+	            // alert(field);
+                
+	        if ($scope.<?= strtolower($modelClass) ?>Filter[field]) {
+		  
+                      
+		      $scope.filter[field] = $scope.<?= strtolower($modelClass) ?>Filter[field];
+		     
+                }
+            }
+            
+        $API.index("<?= strtolower($modelClass) ?>", $scope);
     };
 
     $scope.closeModal = function () {
-        
-      $('#view_container').modal('toggle');
+        $('#view_container').modal('toggle');
     };
 
 
-    $scope.delete = function ($id) {
+    $scope.delete = function ($<?= $pk ?>) {
         var r = confirm("Are you sure?");
         if (r != true) {
             return;
         }
-	  $API.delete("user",$id, $scope);
+	  $API.delete("<?= strtolower($modelClass) ?>",$<?= $pk ?>, $scope);
     };
 
     $scope.deleteAll = function ($model) {
@@ -44,15 +74,14 @@ function UserCtrl($scope, $http, $API, $resource, $location, $log) {
             alert("No records selected");
             return;
         }
-        $API.deleteAll("user", $scope);
+        $API.deleteAll("<?= strtolower($modelClass) ?>", $scope);
     };
 
-    $scope.findbyId = function (id) {
+    $scope.findbyId = function (<?= $pk ?>) {
         for (var i = 0; i < $scope.models.length; i++) {
-            if ($scope.models[i].id == id) {
+            if ($scope.models[i].<?= $pk ?> == <?= $pk ?>) {
                 $scope.model = $scope.models[i];
                 return;
-                //return obj[i];
             }
         }
     };
@@ -73,9 +102,10 @@ function UserCtrl($scope, $http, $API, $resource, $location, $log) {
     };
 
     // toggle selection for a given employee by name
+    
     $scope.toggleSelection = function toggleSelection(id) {
         var idx = $scope.selection.indexOf(id);
-        $("#user_all").attr('checked', false);
+        $("#<?= strtolower($modelClass) ?>_all").attr('checked', false);
         // is currently selected
         if (idx > -1) {
             $scope.selection.splice(idx, 1);
@@ -89,7 +119,7 @@ function UserCtrl($scope, $http, $API, $resource, $location, $log) {
     $scope.selectAll = function ($event) {
         var checkbox = $event.target;
         for (var i in $scope.models) {
-            var idx = $scope.selection.indexOf($scope.models[i].id);
+            var idx = $scope.selection.indexOf($scope.models[i].<?= $pk ?>);
             if (idx > -1) {
                 if (!checkbox.checked) {
                     $scope.selection.splice(idx, 1);
@@ -97,7 +127,7 @@ function UserCtrl($scope, $http, $API, $resource, $location, $log) {
             }
             // is newly selected
             else {
-                $scope.selection.push($scope.models[i].id);
+                $scope.selection.push($scope.models[i].<?= $pk ?>);
             }
         }
     };
@@ -114,46 +144,6 @@ function UserCtrl($scope, $http, $API, $resource, $location, $log) {
 		
      };
     
-     $scope.setDateRange = function(field) {
-       
-         if(field=="from")
-		     {
-		         
-		        $scope.dateFilter[field].setHours(00,00,00,00);
-		     
-		        if ($scope.dateFilter['to'])
-			{
-			
-			   $scope.dateFilter['to'].setHours(23,59,59,999);
-			     
-			   $scope.filter['createdAt'] = {'>=':$scope.dateFilter[field],'<=':$scope.dateFilter['to']}; 
-			   
-			}
-			else
-			{
-			
-		           $scope.filter['createdAt'] = {'>=':$scope.dateFilter[field]};
-		
-			}
-		     }
-		     else if(field=="to")
-		     {
-		  
-		        $scope.dateFilter[field].setHours(23,59,59,999);
-			
-			
-		        if ($scope.dateFilter['from'])
-			{
-			   $scope.dateFilter['from'].setHours(00,00,00,00);
-			 
-			   $scope.filter['createdAt'] = {'>=':$scope.dateFilter['from'],'<=':$scope.dateFilter[field]}; 
-			}
-			else
-			{
-		           $scope.filter['createdAt'] = {'<=':$scope.dateFilter[field]}
-			}
-		     }
-       
-    };
+
     
 }

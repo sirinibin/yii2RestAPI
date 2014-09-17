@@ -1,0 +1,24 @@
+
+<div class="modal-header">
+    <a ui-sref="test1" type="button" class="close" ng-click="closeModal();" aria-hidden="true">&times;</a>
+
+    <h3 class="modal-title">Create New test1</h3>
+</div>
+
+<div class="modal-body">
+    <form role="form" name="test1form" id="test1form">
+    
+       <div class="form-group" >
+        
+            <input type="text" ng-model="model.name" id="model_name"  placeholder="name" class="form-control"
+                   name="name" >
+
+        </div>
+        <div class="modal-footer">
+            <button type="submit" value="SUBMIT" class="btn btn-primary" ng-click="create(model)"
+                    ng-disabled="test1form.$invalid">SUBMIT
+            </button>
+        </div>
+    </form>
+   
+   
