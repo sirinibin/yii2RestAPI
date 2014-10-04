@@ -31,15 +31,15 @@ function <?= $modelClass ?>Ctrl($scope, $http, $API, $resource, $location, $log)
     };
 
     $scope.save = function ($<?= strtolower($modelClass) ?>) {
-        //alert("cool");
+     
         $API.update("<?= strtolower($modelClass) ?>", $<?= strtolower($modelClass) ?>, $scope);
     };
 
     $scope.index = function () {
          $scope.filter={};
 	   
-           for (var field in $scope.<?= strtolower($modelClass) ?>1Filter) {
-	            // alert(field);
+           for (var field in $scope.<?= strtolower($modelClass) ?>Filter) {
+	          
                 
 	        if ($scope.<?= strtolower($modelClass) ?>Filter[field]) {
 		  

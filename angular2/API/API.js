@@ -23,8 +23,10 @@ app.factory('$API', function ($http, $location) {
                     $location.path(model + "/" + $scope.model.id);
                 })
                 .error(function (data, status, headers, config) {
-                    $scope.showMessage("Sorry!Something went wrong", 'warning', true);
-                    // alert("ERR"+data);
+		  // alert("ok:"+angular.toJson(data));
+		      $scope.showMessage(angular.toJson(data), 'warning', true);
+                  // $scope.showMessage("Sorry!Something went wrong", 'warning', true);
+                   //  alert("ERR"+data);
                     // called asynchronously if an error occurs
                     // or server returns response with an error status.
                 });
@@ -99,11 +101,11 @@ app.factory('$API', function ($http, $location) {
 		
 		
 	   }
-	   
+	  
 	
 	      
             var url = host + model + "/index";
-	   // alert("url:"+url);
+	    
             var data = {
                  page: $scope.currentPage,
                 limit: $scope.items_per_page,

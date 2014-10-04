@@ -1,7 +1,10 @@
 app.config(function ($locationProvider, $stateProvider, $urlRouterProvider, $routeProvider) {
-    $urlRouterProvider.otherwise('/test1');
+   
+    /*============ TEST1 STATES AND NESTED VIEWS ================================================*/
 
-    // HOME STATES AND NESTED VIEWS ========================================
+
+   $urlRouterProvider.otherwise('/test1');
+
     $stateProvider.state('test1', {
         url: '/test1',
         templateUrl: 'views/test1/index.html',
@@ -29,7 +32,7 @@ app.config(function ($locationProvider, $stateProvider, $urlRouterProvider, $rou
                     show: true,
                     backdrop: false
                 });
-              $scope.model=null;
+               
             }
         })
 
@@ -52,17 +55,4 @@ app.config(function ($locationProvider, $stateProvider, $urlRouterProvider, $rou
                 });
             }
         })
-
-        
-
-	
-    // ABOUT PAGE AND MULTIPLE NAMED VIEWS =================================
-    /*
-     .state('cities', {
-     url: '/cities',
-     templateUrl: 'views/city/index.html',
-
-     // we'll get to this in a bit
-     });
-     */
-});
+ }); 

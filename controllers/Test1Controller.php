@@ -118,6 +118,8 @@ class Test1Controller extends Controller
 	             ->orderBy($sort);
 	       $query->andFilterWhere([
             'id' => $filter['id'],
+            'createdAt' => $filter['createdAt'],
+            'updatedAt' => $filter['updatedAt'],
         ]);
 
         $query->andFilterWhere(['like', 'name', $filter['name']]);

@@ -41,6 +41,8 @@ class Generator extends  \app\modules\angularbridge\Generator
     public $baseControllerClass = 'yii\web\Controller';
     public $indexWidgetType = 'grid';
     public $searchModelClass = '';
+    
+    public $angularAppFolder="angular2";
 
     /**
      * @inheritdoc
@@ -199,10 +201,11 @@ class Generator extends  \app\modules\angularbridge\Generator
          
             if (is_file($templatePath . '/' . $file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
             
-               $filename=explode('\\', $this->modelClass);
+               //$filename=explode('\\', $this->modelClass);
                
                //echo $this->modelClass;
-               $filename=$filename[(sizeof($filename)-1)]."Controller.js";
+              // $filename=$filename[(sizeof($filename)-1)]."Controller.js";
+               $filename=Inflector::id2camel($this->getControllerID())."Controller.js";
                
                $files[] = new CodeFile("$controllerPath$filename", $this->render("$file"));
            
@@ -210,6 +213,41 @@ class Generator extends  \app\modules\angularbridge\Generator
         
 
         return $files;
+    }
+    public function integrateAngularCRUD()
+    {
+    //echo "Coool";
+     $file=$this->getIndexPath();
+     
+     $current = file_get_contents($file);
+        // Append a new person to the file
+     $current .= "\n<script src=\"controllers/".Inflector::id2camel($this->getControllerID())."Controller.js\"></script>";
+       // Write the contents back to the file
+      file_put_contents($file, $current);
+      
+      
+     $file=$this->getRouterPath();
+     
+     $current = file_get_contents($file);
+        // Append a new person to the file
+     $current=substr(trim($current), 0, -3);
+    
+     $template_file="AngularRouter.php";
+    
+      //echo "Current:".$current;
+      
+      
+     $current .= $this->render($template_file);
+     
+     //echo  "<hr/>:Rendered".$current;
+         
+     $current.="\n }); ";
+     // echo  "<hr/>Updated:".$current;
+      //exit;
+      // Write the contents back to the file
+      file_put_contents($file, $current);
+     
+     
     }
 
     /**
@@ -221,7 +259,7 @@ class Generator extends  \app\modules\angularbridge\Generator
         $class = substr(substr($this->controllerClass, $pos + 1), 0, -10);
 
         return Inflector::camel2id($class);
-    }
+    }	
 
     /**
      * @return string the action view file path
@@ -229,31 +267,29 @@ class Generator extends  \app\modules\angularbridge\Generator
     public function getViewPath()
     {
         $module = empty($this->moduleID) ? Yii::$app : Yii::$app->getModule($this->moduleID);
-          /*
-          echo Yii::$app->getViewPath();
-              echo "<br/>";
-         echo Yii::$app->getBasePath();
-          echo "<br/>";
-         echo $module->getViewPath();
-         */
-       // return $module->getViewPath() . '/' . $this->getControllerID() ;
-        return $module->getBasePath() . '/angular2/views/' . $this->getControllerID() ;
+
+        return $module->getBasePath() . '/'.$this->angularAppFolder.'/views/' . $this->getControllerID() ;
     }
      public function getControllerPath()
     {
         $module = empty($this->moduleID) ? Yii::$app : Yii::$app->getModule($this->moduleID);
-          /*
-          echo Yii::$app->getViewPath();
-              echo "<br/>";
-         echo Yii::$app->getBasePath();
-          echo "<br/>";
-         echo $module->getViewPath();
-         */
-       // return $module->getViewPath() . '/' . $this->getControllerID() ;
-      
-        return $module->getBasePath() . '/angular2/controllers/';
+     
+        return $module->getBasePath() . '/'.$this->angularAppFolder.'/controllers/';
+    }
+     public function getIndexPath()
+    {
+        $module = empty($this->moduleID) ? Yii::$app : Yii::$app->getModule($this->moduleID);
+     
+        return $module->getBasePath() . '/'.$this->angularAppFolder.'/index.html';
     }
 
+    public function getRouterPath()
+    {
+        $module = empty($this->moduleID) ? Yii::$app : Yii::$app->getModule($this->moduleID);
+     
+        return $module->getBasePath() . '/'.$this->angularAppFolder.'/router.js';
+    }
+    
     public function getNameAttribute()
     {
         foreach ($this->getColumnNames() as $name) {

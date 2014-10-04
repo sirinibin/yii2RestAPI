@@ -16,11 +16,10 @@ function Test1Ctrl($scope, $http, $API, $resource, $location, $log) {
     };
 
     $scope.index = function () {
-      
-          $scope.filter={};
+         $scope.filter={};
 	   
            for (var field in $scope.test1Filter) {
-	            // alert(field);
+	          
                 
 	        if ($scope.test1Filter[field]) {
 		  
@@ -29,8 +28,7 @@ function Test1Ctrl($scope, $http, $API, $resource, $location, $log) {
 		     
                 }
             }
-        
-        
+            
         $API.index("test1", $scope);
     };
 

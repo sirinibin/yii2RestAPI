@@ -39,13 +39,18 @@ class DefaultController extends Controller
     {
         $generator = $this->loadGenerator($id);
         $params = ['generator' => $generator, 'id' => $id];
+         
         if (isset($_POST['preview']) || isset($_POST['generate'])) {
             if ($generator->validate()) {
                 $generator->saveStickyAttributes();
                 $files = $generator->generate();
+                
                 if (isset($_POST['generate']) && !empty($_POST['answers'])) {
                     $params['hasError'] = $generator->save($files, (array) $_POST['answers'], $results);
                     $params['results'] = $results;
+                    
+                    $generator->integrateAngularCRUD();
+                    
                 } else {
                     $params['files'] = $files;
                     $params['answers'] = isset($_POST['answers']) ? $_POST['answers'] : null;

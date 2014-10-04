@@ -30,12 +30,11 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">AngularJs + Yii2.0 + Bootstrap3 CRUD</a>
+            <a class="navbar-brand" href="#">AngularJs + SailsJs + Bootstrap3 CRUD</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a ui-sref="test1">Test1</a></li>
-                <!--<li class="active"><a ui-sref="users">Users</a></li>-->
+                <li class="active"><a ui-sref="users">Users</a></li>
                 <li><a ui-sref="cities">Cities</a></li>
               
             </ul>
